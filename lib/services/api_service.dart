@@ -1,24 +1,28 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/user_model.dart';
+import '../models/todo_model.dart';
 
 class ApiService {
   static const String baseUrl = 'https://jsonplaceholder.typicode.com';
 
-  Future<List<Map<String, dynamic>>> fetchUsers() async {
+  Future<List<User>> fetchUsers() async {
     final response = await http.get(Uri.parse('$baseUrl/users'));
     if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(json.decode(response.body));
+      List<dynamic> data = json.decode(response.body);
+      return data.map((json) => User.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load users');
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchTodos(int userId) async {
+  Future<List<ToDo>> fetchToDos(int userId) async {
     final response = await http.get(Uri.parse('$baseUrl/todos?userId=$userId'));
     if (response.statusCode == 200) {
-      return List<Map<String, dynamic>>.from(json.decode(response.body));
+      List<dynamic> data = json.decode(response.body);
+      return data.map((json) => ToDo.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load to-dos');
+      throw Exception('Failed to load todos');
     }
   }
 }
